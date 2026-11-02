@@ -1,0 +1,270 @@
+{
+  "cases_sampled": 138,
+  "dev_cases_excluded": 20,
+  "deployment": "gpt-4.1-mini",
+  "full_benchmark": {
+    "baro": {
+      "overall": {
+        "cases": 270,
+        "AC@1": 0.5741,
+        "AC@3": 0.8926,
+        "Avg@5": 0.8348
+      },
+      "RE2-OB": {
+        "cases": 90,
+        "AC@1": 0.6444,
+        "AC@3": 0.9222,
+        "Avg@5": 0.8622
+      },
+      "RE2-SS": {
+        "cases": 90,
+        "AC@1": 0.6,
+        "AC@3": 0.9333,
+        "Avg@5": 0.8667
+      },
+      "RE3-OB": {
+        "cases": 30,
+        "AC@1": 0.9667,
+        "AC@3": 1.0,
+        "Avg@5": 0.9933
+      },
+      "RE3-SS": {
+        "cases": 30,
+        "AC@1": 0.4333,
+        "AC@3": 0.7667,
+        "Avg@5": 0.7067
+      },
+      "RE3-TT": {
+        "cases": 30,
+        "AC@1": 0.0333,
+        "AC@3": 0.7,
+        "Avg@5": 0.6267
+      }
+    },
+    "ranker": {
+      "overall": {
+        "cases": 270,
+        "AC@1": 0.863,
+        "AC@3": 0.9704,
+        "Avg@5": 0.9496
+      },
+      "RE2-OB": {
+        "cases": 90,
+        "AC@1": 0.9222,
+        "AC@3": 0.9556,
+        "Avg@5": 0.9622
+      },
+      "RE2-SS": {
+        "cases": 90,
+        "AC@1": 0.7667,
+        "AC@3": 0.9778,
+        "Avg@5": 0.9244
+      },
+      "RE3-OB": {
+        "cases": 30,
+        "AC@1": 1.0,
+        "AC@3": 1.0,
+        "Avg@5": 1.0
+      },
+      "RE3-SS": {
+        "cases": 30,
+        "AC@1": 0.7,
+        "AC@3": 0.9333,
+        "Avg@5": 0.8867
+      },
+      "RE3-TT": {
+        "cases": 30,
+        "AC@1": 1.0,
+        "AC@3": 1.0,
+        "Avg@5": 1.0
+      }
+    }
+  },
+  "methods": {
+    "baro": {
+      "overall": {
+        "cases": 138,
+        "AC@1": 0.5145,
+        "AC@3": 0.8768,
+        "Avg@5": 0.8087
+      },
+      "RE2-OB": {
+        "cases": 30,
+        "AC@1": 0.4333,
+        "AC@3": 0.8667,
+        "Avg@5": 0.76
+      },
+      "RE2-SS": {
+        "cases": 30,
+        "AC@1": 0.6667,
+        "AC@3": 1.0,
+        "Avg@5": 0.9133
+      },
+      "RE3-OB": {
+        "cases": 26,
+        "AC@1": 0.9615,
+        "AC@3": 1.0,
+        "Avg@5": 0.9923
+      },
+      "RE3-SS": {
+        "cases": 26,
+        "AC@1": 0.4615,
+        "AC@3": 0.7692,
+        "Avg@5": 0.7231
+      },
+      "RE3-TT": {
+        "cases": 26,
+        "AC@1": 0.0385,
+        "AC@3": 0.7308,
+        "Avg@5": 0.6462
+      }
+    },
+    "ranker": {
+      "overall": {
+        "cases": 138,
+        "AC@1": 0.8623,
+        "AC@3": 0.971,
+        "Avg@5": 0.9522
+      },
+      "RE2-OB": {
+        "cases": 30,
+        "AC@1": 0.8667,
+        "AC@3": 0.9333,
+        "Avg@5": 0.9467
+      },
+      "RE2-SS": {
+        "cases": 30,
+        "AC@1": 0.7667,
+        "AC@3": 1.0,
+        "Avg@5": 0.94
+      },
+      "RE3-OB": {
+        "cases": 26,
+        "AC@1": 1.0,
+        "AC@3": 1.0,
+        "Avg@5": 1.0
+      },
+      "RE3-SS": {
+        "cases": 26,
+        "AC@1": 0.6923,
+        "AC@3": 0.9231,
+        "Avg@5": 0.8769
+      },
+      "RE3-TT": {
+        "cases": 26,
+        "AC@1": 1.0,
+        "AC@3": 1.0,
+        "Avg@5": 1.0
+      }
+    },
+    "agent": {
+      "overall": {
+        "cases": 138,
+        "AC@1": 0.8261,
+        "AC@3": 0.9565,
+        "Avg@5": 0.9348
+      },
+      "RE2-OB": {
+        "cases": 30,
+        "AC@1": 0.9,
+        "AC@3": 0.9667,
+        "Avg@5": 0.9533
+      },
+      "RE2-SS": {
+        "cases": 30,
+        "AC@1": 0.8667,
+        "AC@3": 1.0,
+        "Avg@5": 0.9733
+      },
+      "RE3-OB": {
+        "cases": 26,
+        "AC@1": 0.9615,
+        "AC@3": 1.0,
+        "Avg@5": 0.9923
+      },
+      "RE3-SS": {
+        "cases": 26,
+        "AC@1": 0.6923,
+        "AC@3": 0.8846,
+        "Avg@5": 0.8538
+      },
+      "RE3-TT": {
+        "cases": 26,
+        "AC@1": 0.6923,
+        "AC@3": 0.9231,
+        "Avg@5": 0.8923
+      }
+    },
+    "hybrid": {
+      "overall": {
+        "cases": 138,
+        "AC@1": 0.8333,
+        "AC@3": 0.9928,
+        "Avg@5": 0.9536
+      },
+      "RE2-OB": {
+        "cases": 30,
+        "AC@1": 0.9,
+        "AC@3": 1.0,
+        "Avg@5": 0.9733
+      },
+      "RE2-SS": {
+        "cases": 30,
+        "AC@1": 0.9,
+        "AC@3": 1.0,
+        "Avg@5": 0.98
+      },
+      "RE3-OB": {
+        "cases": 26,
+        "AC@1": 1.0,
+        "AC@3": 1.0,
+        "Avg@5": 1.0
+      },
+      "RE3-SS": {
+        "cases": 26,
+        "AC@1": 0.5769,
+        "AC@3": 0.9615,
+        "Avg@5": 0.8692
+      },
+      "RE3-TT": {
+        "cases": 26,
+        "AC@1": 0.7692,
+        "AC@3": 1.0,
+        "Avg@5": 0.9385
+      }
+    }
+  },
+  "llm": {
+    "agent": {
+      "fault_type_accuracy": 0.5145,
+      "citation_validity": 1.0,
+      "grounded_reports": 1.0,
+      "grounded_first_attempt": 0.913,
+      "self_corrected_reports": 12,
+      "mean_tool_calls": 15.16,
+      "mean_llm_calls": 9.92,
+      "mean_prompt_tokens": 32521,
+      "mean_completion_tokens": 911,
+      "cost_per_case_usd": 0.007,
+      "total_cost_usd": 0.97,
+      "latency_p50_s": 51.22,
+      "latency_p95_s": 223.89
+    },
+    "hybrid": {
+      "fault_type_accuracy": 0.5,
+      "citation_validity": 1.0,
+      "grounded_reports": 1.0,
+      "grounded_first_attempt": 0.9058,
+      "self_corrected_reports": 13,
+      "mean_tool_calls": 14.66,
+      "mean_llm_calls": 10.54,
+      "mean_prompt_tokens": 31663,
+      "mean_completion_tokens": 1022,
+      "cost_per_case_usd": 0.0067,
+      "total_cost_usd": 0.93,
+      "latency_p50_s": 57.92,
+      "latency_p95_s": 201.16
+    }
+  },
+  "cases_scored": 138
+}
