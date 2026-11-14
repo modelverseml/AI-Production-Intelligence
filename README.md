@@ -8,25 +8,25 @@ An agentic AIOps platform that finds the root cause of production incidents in m
 
 All numbers come from `backend/rcaeval_evaluation.json` and `backend/ranker_evaluation.json`, produced by the scripts in this repo.
 
-**Held-out comparison: 138 RCAEval cases** (stratified across 5 datasets; 20 prompt-development cases excluded; LLM `gpt-4.1-mini` on Azure OpenAI)
+**Held-out comparison: 250 RCAEval cases** (all 270 cases minus the 20 used for prompt development; LLM `gpt-5.4` on Azure OpenAI)
 
 | Method | Top-1 (AC@1) | Top-3 (AC@3) | Avg@5 |
 |---|---|---|---|
-| Statistical baseline (BARO-style) | 51.4% | 87.7% | 0.809 |
-| LightGBM ranker (root-cause service held out) | **86.2%** | 97.1% | 0.952 |
-| LLM agent only | 82.6% | 95.7% | 0.935 |
-| LLM agent + ML ranker (hybrid) | 83.3% | **99.3%** | **0.954** |
+| Statistical baseline (BARO-style) | 58.4% | 89.6% | 0.840 |
+| LightGBM ranker (root-cause service held out) | 86.4% | **96.8%** | 0.949 |
+| LLM agent only | 88.8% | 96.4% | 0.958 |
+| LLM agent + ML ranker (hybrid) | **92.0%** | **96.8%** | **0.966** |
 
-**Agent quality and cost** (hybrid / agent only)
+**Agent quality and cost** (hybrid / agent only, same 250 cases)
 
 | Measure | Hybrid | Agent only |
 |---|---|---|
 | Citations verified against tool outputs | 100% | 100% |
-| Reports that needed the verifier's correction loop | 13 (9.4%) | 12 (8.7%) |
-| Mean tool calls per investigation | 14.7 | 15.2 |
-| Cost per investigation (estimate) | $0.0067 | $0.0070 |
-| Latency p50 / p95 | 58 s / 201 s | 51 s / 224 s |
-| Fault-type accuracy (secondary task) | 50.0% | 51.5% |
+| Reports that needed the verifier's correction loop | 1 (0.4%) | 2 (0.8%) |
+| Mean tool calls per investigation | 17.3 | 20.6 |
+| Cost per investigation (estimate) | $0.047 | $0.050 |
+| Latency p50 / p95 | 16 s / 58 s | 18 s / 80 s |
+| Fault-type accuracy (secondary task) | 57.6% | 60.4% |
 
 **ML ranker on all 270 cases**
 
@@ -38,10 +38,10 @@ All numbers come from `backend/rcaeval_evaluation.json` and `backend/ranker_eval
 | Whole application held out | 81.5% | 0.933 |
 
 **What the results say**
-- Every learned method beats the statistical baseline by about 30 points of top-1 accuracy.
-- The hybrid agent puts the true faulty service in its top 3 in 99.3% of cases, and it has the best Avg@5. On top-1, the plain ML ranker is slightly ahead (86.2% vs. 83.3%). With 138 cases, a difference that small is within noise (roughly ±6 points).
-- The agent's value is explainability with guarantees: every report names suspects, explains why, cites evidence, and suggests a fix. The verifier caught and corrected about 9% of reports that had initially cited evidence never returned by a tool, so 100% of the final reports are grounded.
-- Classifying the fault type (CPU, memory, delay, code defect, …) is the weakest part at about 50%. Code-level faults often look like resource problems in the telemetry.
+- Every learned method beats the statistical baseline by roughly 28–34 points of top-1 accuracy.
+- The hybrid agent is the most accurate method: 92.0% top-1, against 86.4% for the ML ranker alone and 88.8% for the agent without the ML prior. The prior also makes investigations cheaper (fewer tool calls and tokens).
+- The agent's value is explainability with guarantees: every report names suspects, explains why, cites evidence, and suggests a fix. All 500 reports cite only evidence that a tool actually returned; the verifier sent 3 back for correction.
+- Classifying the fault type (CPU, memory, delay, code defect, …) is the weakest part at about 58–60%. Code-level faults often look like resource problems in the telemetry.
 
 
 ## Architecture
@@ -56,7 +56,7 @@ FastAPI ── JWT · RBAC (viewer / analyst / admin) · Pydantic
   │                          ↑                 │
   │                          └── rejected ─────┘  (cited an ID no tool returned)
   │
-  │     tools: get_top_anomalies · get_service_metrics · get_service_logs ·
+  │     tools: list_services · get_top_anomalies · get_service_metrics · get_service_logs ·
   │            get_service_traces · get_dependencies · search_runbooks (hybrid RAG)
   │
   ├── Telemetry feature extraction (pandas / numpy)
@@ -87,7 +87,7 @@ PostgreSQL ── users · services · incidents · runbooks · investigations (
 
 ## Setup
 
-Requirements: Python 3.12+, PostgreSQL 15+, Node 20+, and an Azure OpenAI deployment (e.g. `gpt-4.1-mini`).
+Requirements: Python 3.12+, PostgreSQL 15+, Node 20+, and an Azure OpenAI deployment (results above use `gpt-5.4`).
 
 ### 1. Database
 
@@ -128,8 +128,8 @@ Sign in with `ADMIN_EMAIL` / `ADMIN_PASSWORD`, open a benchmark incident, choose
 ```bash
 cd backend
 python -m scripts.train_ranker                 # ranker_evaluation.json
-python -m scripts.evaluate_rcaeval             # rcaeval_evaluation.json (resumable)
-python -m scripts.evaluate_rcaeval --per-dataset 4 --include-dev   # quick pilot
+python -m scripts.evaluate_rcaeval --per-dataset 0   # all held-out cases -> rcaeval_evaluation.json (resumable)
+python -m scripts.evaluate_rcaeval --per-dataset 4 --include-dev   # quick pilot -> rcaeval_pilot.json (git-ignored)
 ```
 
 Azure deployments are rate-limited by tokens per minute. The agent backs off on 429 responses and caps output tokens, because Azure reserves prompt + max output tokens against the quota for every request.

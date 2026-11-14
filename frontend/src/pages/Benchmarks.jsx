@@ -6,90 +6,80 @@ import { Info, Spinner, Stat } from '../components/ui'
 import useTooltip from '../useTooltip'
 
 const METHOD_LABELS = {
-  baro: 'Simple statistics (baseline)',
-  ranker: 'ML model (LightGBM)',
-  agent: 'AI agent only',
+  baro: 'Simple statistics',
+  ranker: 'ML model',
+  agent: 'AI agent',
   hybrid: 'AI agent + ML model',
-  ranker_case_cv: 'ML model · easy test (optimistic)',
-  ranker_cv: 'ML model · unseen faulty services',
-  ranker_loso: 'ML model · unseen application',
+  ranker_case_cv: 'ML model · easy test',
+  ranker_cv: 'ML model · new broken services',
+  ranker_loso: 'ML model · new app',
+}
+// One short line under each row name, so the table explains itself.
+const METHOD_NOTES = {
+  baro: 'Blames the service whose numbers jumped most. The bar to beat.',
+  ranker: 'Trained on past outages to rank the suspects.',
+  agent: 'An AI that checks metrics, logs and traces like an engineer.',
+  hybrid: 'The AI agent, given the ML model’s suspects as a hint.',
+  ranker_case_cv: 'It had seen the same services break in training, so this is flattering.',
+  ranker_cv: 'Tested on services it never saw break. The main result.',
+  ranker_loso: 'Tested on a whole app it never saw. The hardest test.',
 }
 const METRICS = [
-  { value: 'AC@1', label: 'Top-1 accuracy', short: 'Top-1', means: 'ranked the true faulty service #1' },
-  { value: 'AC@3', label: 'Top-3 accuracy', short: 'Top-3', means: 'had the true faulty service in its top 3' },
-  { value: 'Avg@5', label: 'Average top-5 score', short: 'Top-5 avg', means: 'scored on how high it ranked the true faulty service (average of top-1 … top-5 accuracy)' },
+  { value: 'AC@1', label: 'Right on the first guess', short: 'First guess', means: 'named the broken service as its first guess',
+    reads: 'Each % shows how often the method’s first guess was the service that actually broke.' },
+  { value: 'AC@3', label: 'Right within 3 guesses', short: 'Top 3 guesses', means: 'had the broken service among its top 3 guesses',
+    reads: 'Each % shows how often the service that actually broke was among the method’s top 3 guesses.' },
+  { value: 'Avg@5', label: 'Overall ranking score', short: 'Overall score', means: 'scored on how high it ranked the broken service',
+    reads: 'Each % is an overall score: higher means the broken service was ranked nearer the top of the suspect list.' },
 ]
 const GLOSSARY = [
-  ['RCAEval', 'A public research benchmark. Researchers broke one service at a time in three real demo applications and recorded what happened.'],
-  ['Top-1 accuracy', "How often the method's #1 suspect was the service that was actually broken."],
-  ['Simple statistics (baseline)', 'Blame whichever service had the most unusual metric. This is the bar to beat.'],
-  ['ML model (LightGBM)', 'A model trained on past incidents to rank suspects. It is always tested on incidents it never saw.'],
-  ['AI agent', 'A language model (Azure OpenAI) that investigates like an engineer: it looks up metrics, logs and traces, then writes a report.'],
-  ['Held-out cases', 'Incidents never used while building or tuning the system, so the scores are not inflated.'],
+  ['RCAEval', 'A public research benchmark. Researchers broke one service at a time in three real demo apps and recorded what happened.'],
+  ['Service', 'One small program inside an app, such as “cart” or “payment”. The job is to find which one caused the outage.'],
+  ['First guess / top 3 guesses', 'Each method lists its suspects in order. We check whether the broken service was #1, or anywhere in the first three.'],
+  ['Fair testing', 'Every method is scored on the same outages, and none of them was used while building or tuning the system.'],
 ]
-// Score thresholds for the sequential heat ramp (validated ordinal blue).
-const HEAT_STEPS = [0.5, 0.65, 0.8, 0.9, 0.97]
 
 function pct(value) {
   return value === undefined || value === null ? '—' : `${(value * 100).toFixed(1)}%`
 }
 
-function heatLevel(value) {
-  let level = -1
-  HEAT_STEPS.forEach((step, i) => { if (value >= step) level = i })
-  return level
-}
+const REFERENCE_ROWS = ['baro']
 
-function HeatTable({ methods, metric }) {
+/** Results table: one row per method with its overall score and a bar, so rows compare at a glance. */
+function ScoreTable({ methods, metric, highlight }) {
   const { show, hide, node } = useTooltip()
-  const names = Object.keys(methods)
-  const datasets = Object.keys(methods[names[0]] || {})
   return (
     <>
-      <div className="table-card card">
-        <table className="heat">
+      <div className="table-card card score-table">
+        <table>
           <thead>
-            <tr>
-              <th>Method</th>
-              {datasets.map((ds) => <th key={ds} style={{ textAlign: 'center' }}>{ds === 'overall' ? 'Overall' : ds}</th>)}
-            </tr>
+            <tr><th>Method</th><th>Score</th></tr>
           </thead>
           <tbody>
-            {names.map((name) => (
-              <tr key={name}>
-                <td className="strong">{METHOD_LABELS[name] || name}</td>
-                {datasets.map((ds) => {
-                  const cell = methods[name][ds]
-                  const value = cell?.[metric]
-                  const level = value === undefined ? -1 : heatLevel(value)
-                  return (
-                    <td
-                      key={ds}
-                      className="heat-cell"
-                      style={{
-                        background: level < 0 ? 'transparent' : `var(--seq-${level})`,
-                        color: level < 0 ? 'var(--text)' : level <= 1 ? '#0b0b0b' : '#ffffff',
-                      }}
-                      onMouseMove={(e) => show(e, <><strong>{METHOD_LABELS[name] || name}</strong>{ds === 'overall' ? 'All datasets' : ds}: {pct(value)}<div>out of {cell?.cases} incidents</div></>)}
-                      onMouseLeave={hide}
-                    >
-                      {pct(value)}
-                    </td>
-                  )
-                })}
-              </tr>
-            ))}
+            {Object.entries(methods).map(([name, rows]) => {
+              const label = METHOD_LABELS[name] || name
+              const value = rows.overall?.[metric]
+              return (
+                <tr key={name} className={name === highlight ? 'highlight' : REFERENCE_ROWS.includes(name) ? 'reference' : ''}>
+                  <td className="method">
+                    <div className="strong">{label}</div>
+                    {METHOD_NOTES[name] && <div className="muted small">{METHOD_NOTES[name]}</div>}
+                  </td>
+                  <td
+                    className="score"
+                    onMouseMove={(e) => show(e, <><strong>{label}</strong>{pct(value)}<div>out of {rows.overall?.cases} outages</div></>)}
+                    onMouseLeave={hide}
+                  >
+                    <div className="cell-inner">
+                      <div className="cell-value">{pct(value)}</div>
+                      <div className="cell-track"><div className="cell-fill" style={{ width: `${(value ?? 0) * 100}%` }} /></div>
+                    </div>
+                  </td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
-      </div>
-      <div className="heat-legend" style={{ marginTop: 8 }}>
-        <span>Darker = better:</span>
-        <span className="swatch" style={{ background: 'var(--surface-3)' }} /> &lt;{HEAT_STEPS[0] * 100}%
-        {HEAT_STEPS.map((step, i) => (
-          <span key={step} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
-            <span className="swatch" style={{ background: `var(--seq-${i})` }} />≥{step * 100}%
-          </span>
-        ))}
       </div>
       {node}
     </>
@@ -190,6 +180,7 @@ export default function Benchmarks() {
   const baseline = overall.find((r) => r.key === 'baro')
   const rankerOverall = ranker?.methods?.ranker_cv?.overall?.[metric]
   const rankerBaseline = ranker?.methods?.baro?.overall?.[metric]
+  const rankerHard = ranker?.methods?.ranker_loso?.overall?.[metric]
 
   return (
     <div className="page">
@@ -270,9 +261,9 @@ export default function Benchmarks() {
             </section>
           </div>
 
-          <h2 className="section-title">Results per application</h2>
-          <p className="muted small section-sub">OB = Online Boutique (shop), SS = Sock Shop (shop), TT = Train Ticket (booking, 68 services). RE2 = resource and network faults, RE3 = code bugs. Hover a cell for details.</p>
-          <HeatTable methods={rcaeval.methods} metric={metric} />
+          <h2 className="section-title">Detailed results</h2>
+          <p className="muted small section-sub">{metricInfo.reads}</p>
+          <ScoreTable methods={rcaeval.methods} metric={metric} />
 
           {Object.keys(rcaeval.llm || {}).length > 0 && (
             <>
@@ -298,14 +289,23 @@ export default function Benchmarks() {
       )}
 
       {ranker && (
-        <>
-          <h2 className="section-title">How well the ML model generalizes ({ranker.cases} outages)</h2>
-          <p className="muted small section-sub">
-            Random guessing would get {pct(ranker['chance_AC@1'])} top-1 accuracy. The rows run from the easiest test to the hardest:
-            the last two test on broken services, and on whole applications, that the model never saw during training.
+        <section className="card" style={{ marginTop: 20 }}>
+          <div className="card-header">
+            <div className="card-title"><Icon name="layers" /><h2>Does the ML model work on outages it has never seen?</h2></div>
+            <span className="pill neutral">{ranker.cases} outages</span>
+          </div>
+          {rankerOverall !== undefined && (
+            <p className="takeaway" style={{ margin: '0 0 6px' }}>
+              It {metricInfo.means} in <strong>{pct(rankerOverall)}</strong> of outages, compared with {pct(rankerBaseline)} for
+              simple statistics{rankerHard !== undefined && <>, and still <strong>{pct(rankerHard)}</strong> on an app it never saw</>}.
+            </p>
+          )}
+          <p className="muted small" style={{ margin: '0 0 14px' }}>
+            Outages were hidden from the model during training, then used to test it, in three ways from easiest to hardest.
+            {' '}{metricInfo.reads}
           </p>
-          <HeatTable methods={ranker.methods} metric={metric} />
-        </>
+          <ScoreTable methods={ranker.methods} metric={metric} highlight="ranker_cv" />
+        </section>
       )}
 
       <h2 className="section-title">Glossary</h2>

@@ -11,6 +11,7 @@ PRICES = {
     "gpt-4.1" : (2.00, 0.50, 8.00),
     "gpt-5-mini" : (0.25, 0.025, 2.00),
     "gpt-5" : (1.25, 0.125, 10.00),
+    "gpt-5.4" : (2.50, 0.25, 15.00),
 }
 
 def llm_configured():
@@ -28,7 +29,7 @@ def get_client():
     )
 
 def default_deployment():
-    return settings.AZURE_OPENAI_DEPLOYMENT_NAME_LOWER
+    return settings.AZURE_OPENAI_DEPLOYMENT
 
 def estimate_cost(deployment, prompt_tokens, completion_tokens, cached_tokens = 0):
     price_in, price_cached, price_out = PRICES.get(deployment, (0.0, 0.0, 0.0))

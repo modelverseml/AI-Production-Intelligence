@@ -29,6 +29,21 @@ def select_cases(per_dataset = PER_DATASET, include_dev = False):
         cases = cases.groupby("dataset").head(per_dataset)
     return cases, excluded
 
+TARGET_PATH = RUN_DIR / "target.json"
+
+def write_target(case_ids, deployment):
+    """Record which cases the current evaluation runs, so the live view matches it."""
+    RUN_DIR.mkdir(parents = True, exist_ok = True)
+    TARGET_PATH.write_text(json.dumps({"deployment" : deployment, "cases" : list(case_ids)}))
+
+def target_cases():
+    """Cases of the latest evaluation run (falls back to the default sample)."""
+    if TARGET_PATH.exists():
+        target = json.loads(TARGET_PATH.read_text())
+        cases = available_cases()
+        return cases.loc[[c for c in target["cases"] if c in cases.index]], target.get("deployment")
+    return select_cases()[0], None
+
 def run_path(method, deployment):
     return RUN_DIR / f"{method}_{deployment}.jsonl"
 
@@ -48,8 +63,8 @@ def live_progress(deployment = None):
     Each LLM method is scored on the cases it has finished so far, next to the
     baseline and ML ranker on those same cases.
     """
-    deployment = deployment or default_deployment()
-    cases, _ = select_cases()
+    cases, target_deployment = target_cases()
+    deployment = deployment or target_deployment or default_deployment()
     truth = cases["root_cause_service"]
     oof = load_oof()
     methods = {}

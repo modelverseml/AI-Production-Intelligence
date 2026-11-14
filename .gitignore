@@ -1,8 +1,29 @@
+# Secrets: keep only the .env.example templates
 .env
+.env.*
+!.env.example
+
+# Python
 __pycache__/
 *.pyc
 .pytest_cache/
+.venv/
+venv/
+
+# Frontend
 node_modules/
 frontend/dist/
-.DS_Store
+
+# Benchmark data (~1.3 GB; download with scripts/download_rcaeval.py) and derived caches
 data/
+
+# Run-time and scratch outputs of the evaluation
+backend/rcaeval_pilot.json
+backend/results/rcaeval_runs/target.json
+backend/results/old_runs/
+
+# Editors and OS
+.DS_Store
+.vscode/
+.idea/
+*.log

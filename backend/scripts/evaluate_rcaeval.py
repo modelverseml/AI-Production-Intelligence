@@ -26,7 +26,7 @@ import numpy as np
 import pandas as pd
 
 from app.agent import investigate_case, runbook_retriever
-from app.evaluation import LLM_METHODS, PER_DATASET, RUN_DIR, load_runs, run_path, select_cases
+from app.evaluation import LLM_METHODS, PER_DATASET, RUN_DIR, load_runs, run_path, select_cases, write_target
 from app.llm import default_deployment
 from app.ranker import load_oof
 from app.rca_metrics import rank_of, summarize_by
@@ -120,6 +120,7 @@ def main():
     all_cases = available_cases()
     # Cases used while developing the prompts are excluded from evaluation.
     cases, dev_cases = select_cases(args.per_dataset, args.include_dev)
+    write_target(cases.index, args.deployment)
     truth = cases["root_cause_service"]
     frame = cases[["dataset", "fault"]].copy()
     report = {

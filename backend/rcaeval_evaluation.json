@@ -1,7 +1,7 @@
 {
-  "cases_sampled": 138,
+  "cases_sampled": 250,
   "dev_cases_excluded": 20,
-  "deployment": "gpt-4.1-mini",
+  "deployment": "gpt-5.4",
   "full_benchmark": {
     "baro": {
       "overall": {
@@ -83,22 +83,22 @@
   "methods": {
     "baro": {
       "overall": {
-        "cases": 138,
-        "AC@1": 0.5145,
-        "AC@3": 0.8768,
-        "Avg@5": 0.8087
+        "cases": 250,
+        "AC@1": 0.584,
+        "AC@3": 0.896,
+        "Avg@5": 0.84
       },
       "RE2-OB": {
-        "cases": 30,
-        "AC@1": 0.4333,
-        "AC@3": 0.8667,
-        "Avg@5": 0.76
+        "cases": 86,
+        "AC@1": 0.6512,
+        "AC@3": 0.9186,
+        "Avg@5": 0.8605
       },
       "RE2-SS": {
-        "cases": 30,
-        "AC@1": 0.6667,
-        "AC@3": 1.0,
-        "Avg@5": 0.9133
+        "cases": 86,
+        "AC@1": 0.6047,
+        "AC@3": 0.9302,
+        "Avg@5": 0.8674
       },
       "RE3-OB": {
         "cases": 26,
@@ -121,22 +121,22 @@
     },
     "ranker": {
       "overall": {
-        "cases": 138,
-        "AC@1": 0.8623,
-        "AC@3": 0.971,
-        "Avg@5": 0.9522
+        "cases": 250,
+        "AC@1": 0.864,
+        "AC@3": 0.968,
+        "Avg@5": 0.9488
       },
       "RE2-OB": {
-        "cases": 30,
-        "AC@1": 0.8667,
-        "AC@3": 0.9333,
-        "Avg@5": 0.9467
+        "cases": 86,
+        "AC@1": 0.9186,
+        "AC@3": 0.9535,
+        "Avg@5": 0.9605
       },
       "RE2-SS": {
-        "cases": 30,
-        "AC@1": 0.7667,
-        "AC@3": 1.0,
-        "Avg@5": 0.94
+        "cases": 86,
+        "AC@1": 0.7791,
+        "AC@3": 0.9767,
+        "Avg@5": 0.9279
       },
       "RE3-OB": {
         "cases": 26,
@@ -159,60 +159,22 @@
     },
     "agent": {
       "overall": {
-        "cases": 138,
-        "AC@1": 0.8261,
-        "AC@3": 0.9565,
-        "Avg@5": 0.9348
+        "cases": 250,
+        "AC@1": 0.888,
+        "AC@3": 0.964,
+        "Avg@5": 0.9576
       },
       "RE2-OB": {
-        "cases": 30,
-        "AC@1": 0.9,
-        "AC@3": 0.9667,
-        "Avg@5": 0.9533
+        "cases": 86,
+        "AC@1": 0.9186,
+        "AC@3": 0.9651,
+        "Avg@5": 0.9674
       },
       "RE2-SS": {
-        "cases": 30,
-        "AC@1": 0.8667,
-        "AC@3": 1.0,
-        "Avg@5": 0.9733
-      },
-      "RE3-OB": {
-        "cases": 26,
-        "AC@1": 0.9615,
-        "AC@3": 1.0,
-        "Avg@5": 0.9923
-      },
-      "RE3-SS": {
-        "cases": 26,
-        "AC@1": 0.6923,
-        "AC@3": 0.8846,
-        "Avg@5": 0.8538
-      },
-      "RE3-TT": {
-        "cases": 26,
-        "AC@1": 0.6923,
-        "AC@3": 0.9231,
-        "Avg@5": 0.8923
-      }
-    },
-    "hybrid": {
-      "overall": {
-        "cases": 138,
-        "AC@1": 0.8333,
-        "AC@3": 0.9928,
-        "Avg@5": 0.9536
-      },
-      "RE2-OB": {
-        "cases": 30,
-        "AC@1": 0.9,
-        "AC@3": 1.0,
-        "Avg@5": 0.9733
-      },
-      "RE2-SS": {
-        "cases": 30,
-        "AC@1": 0.9,
-        "AC@3": 1.0,
-        "Avg@5": 0.98
+        "cases": 86,
+        "AC@1": 0.8953,
+        "AC@3": 0.9651,
+        "Avg@5": 0.9581
       },
       "RE3-OB": {
         "cases": 26,
@@ -222,49 +184,87 @@
       },
       "RE3-SS": {
         "cases": 26,
-        "AC@1": 0.5769,
-        "AC@3": 0.9615,
-        "Avg@5": 0.8692
+        "AC@1": 0.6154,
+        "AC@3": 0.9231,
+        "Avg@5": 0.8769
       },
       "RE3-TT": {
         "cases": 26,
-        "AC@1": 0.7692,
+        "AC@1": 0.9231,
+        "AC@3": 0.9615,
+        "Avg@5": 0.9615
+      }
+    },
+    "hybrid": {
+      "overall": {
+        "cases": 250,
+        "AC@1": 0.92,
+        "AC@3": 0.968,
+        "Avg@5": 0.9664
+      },
+      "RE2-OB": {
+        "cases": 86,
+        "AC@1": 0.9419,
+        "AC@3": 0.9651,
+        "Avg@5": 0.9744
+      },
+      "RE2-SS": {
+        "cases": 86,
+        "AC@1": 0.907,
+        "AC@3": 0.9767,
+        "Avg@5": 0.9651
+      },
+      "RE3-OB": {
+        "cases": 26,
+        "AC@1": 1.0,
         "AC@3": 1.0,
+        "Avg@5": 1.0
+      },
+      "RE3-SS": {
+        "cases": 26,
+        "AC@1": 0.8462,
+        "AC@3": 0.9615,
+        "Avg@5": 0.9385
+      },
+      "RE3-TT": {
+        "cases": 26,
+        "AC@1": 0.8846,
+        "AC@3": 0.9231,
         "Avg@5": 0.9385
       }
     }
   },
   "llm": {
     "agent": {
-      "fault_type_accuracy": 0.5145,
+      "fault_type_accuracy": 0.604,
       "citation_validity": 1.0,
       "grounded_reports": 1.0,
-      "grounded_first_attempt": 0.913,
-      "self_corrected_reports": 12,
-      "mean_tool_calls": 15.16,
-      "mean_llm_calls": 9.92,
-      "mean_prompt_tokens": 32521,
-      "mean_completion_tokens": 911,
-      "cost_per_case_usd": 0.007,
-      "total_cost_usd": 0.97,
-      "latency_p50_s": 51.22,
-      "latency_p95_s": 223.89
+      "grounded_first_attempt": 0.992,
+      "self_corrected_reports": 2,
+      "mean_tool_calls": 20.58,
+      "mean_llm_calls": 5.6,
+      "mean_prompt_tokens": 17530,
+      "mean_completion_tokens": 1040,
+      "cost_per_case_usd": 0.0502,
+      "total_cost_usd": 12.54,
+      "latency_p50_s": 17.59,
+      "latency_p95_s": 79.63
     },
     "hybrid": {
-      "fault_type_accuracy": 0.5,
+      "fault_type_accuracy": 0.576,
       "citation_validity": 1.0,
       "grounded_reports": 1.0,
-      "grounded_first_attempt": 0.9058,
-      "self_corrected_reports": 13,
-      "mean_tool_calls": 14.66,
-      "mean_llm_calls": 10.54,
-      "mean_prompt_tokens": 31663,
-      "mean_completion_tokens": 1022,
-      "cost_per_case_usd": 0.0067,
-      "total_cost_usd": 0.93,
-      "latency_p50_s": 57.92,
-      "latency_p95_s": 201.16
+      "grounded_first_attempt": 0.996,
+      "self_corrected_reports": 1,
+      "mean_tool_calls": 17.34,
+      "mean_llm_calls": 5.29,
+      "mean_prompt_tokens": 15066,
+      "mean_completion_tokens": 969,
+      "cost_per_case_usd": 0.0466,
+      "total_cost_usd": 11.65,
+      "latency_p50_s": 16.02,
+      "latency_p95_s": 57.62
     }
   },
-  "cases_scored": 138
+  "cases_scored": 250
 }

@@ -12,8 +12,7 @@ class Settings(BaseSettings):
     AZURE_OPENAI_ENDPOINT : str | None = None
     AZURE_OPENAI_API_VERSION : str = "openai/v1/"
     AZURE_OPENAI_KEY : str | None = None
-    AZURE_OPENAI_DEPLOYMENT_NAME_LOWER : str = "gpt-4.1-mini"
-    AZURE_OPENAI_DEPLOYMENT_NAME_HIGHER : str = "gpt-5-mini"
+    AZURE_OPENAI_DEPLOYMENT : str = "gpt-5.4"
 
     model_config = SettingsConfigDict(
         env_file = ".env",

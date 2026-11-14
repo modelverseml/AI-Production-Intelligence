@@ -310,8 +310,20 @@ table.compact td, table.compact th { padding: 8px 12px; }
 }
 .tooltip strong { display: block; margin-bottom: 2px; }
 
-.heat td.heat-cell { text-align: center; font-weight: 600; font-variant-numeric: tabular-nums; border-left: 2px solid var(--surface); }
-.heat-legend, .graph-legend { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+/* Results table: one score per row with a bar */
+.score-table { margin: 0; box-shadow: none; }
+.score-table td.method { min-width: 200px; }
+.score-table td.score { width: 45%; }
+.score-table .cell-inner { display: flex; align-items: center; gap: 14px; }
+.score-table .cell-value { min-width: 56px; text-align: right; font-weight: 700; font-size: 15px; font-variant-numeric: tabular-nums; }
+.score-table .cell-track { flex: 1; height: 8px; background: var(--surface-3); border-radius: 99px; overflow: hidden; }
+.score-table .cell-fill { height: 100%; background: var(--accent); border-radius: 99px; }
+.score-table tr.reference .cell-fill { background: var(--border-strong); }
+.score-table tr.reference .cell-value { color: var(--text-2); }
+.score-table tr.highlight td { background: var(--accent-soft); }
+.score-table tr.highlight .cell-value { color: var(--accent-ink); }
+.score-table tbody tr:last-child td { border-bottom: 0; }
+.graph-legend { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); flex-wrap: wrap; }
 .swatch { width: 14px; height: 10px; border-radius: 3px; display: inline-block; }
 
 .confidence { display: flex; align-items: center; gap: 10px; }
